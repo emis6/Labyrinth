@@ -1,5 +1,5 @@
 # Modèle de fichier Makefile  pour le fichier template.c
-LIBDIR = /home/sasl/encad/brajard/projet/CGS_lib
+LIBDIR = /home/mahshid/Documents/C/Project/C_Projet/CGS_lib/
 
 # options de compilation
 CC = gcc
@@ -8,7 +8,7 @@ LIBS = -L $(LIBDIR)/lib
 LDFLAGS = -lm -lcgs
 
 # fichiers du projet
-SRC = template.c
+SRC = my_heap.h my_heap.c template.c
 OBJ = $(SRC:.c=.o)
 EXEC = template
 

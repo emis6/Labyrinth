@@ -15,7 +15,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <time.h>
-
+#include "my_heap.h"
 
 extern int debug;	/* hack to enable debug messages */
 
@@ -33,6 +33,10 @@ typedef struct donnees_lab{
   Pos adv;
   Pos Tresor;
 }Lab;
+
+
+/*Fonction pour trouver le chemin avec Dijkstra will be used to count h*/
+int Dijkstra(Lab* lab, int sizeX, int sizeY , t_return_code ret, int player, t_move move);
 
 /*Fonction pour jouer avec A* simple*/
 int A_Star(Lab* lab, int sizeX, int sizeY , t_return_code ret, int player, t_move move);
@@ -78,7 +82,6 @@ int main()
 	/* connection to the server */
 	connectToServer( "pc4023.polytech.upmc.fr", 1234, "prog_mahsh_ani");
 	
-	
 	/* wait for a game, and retrieve informations about it */
 	//waitForLabyrinth( "DO_NOTHING timeout=400", labName, &sizeX, &sizeY);	
 	waitForLabyrinth( "PLAY_RANDOM timeout=100 rotation=TRUE", labName, &sizeX, &sizeY);
@@ -122,7 +125,10 @@ int main()
 	return EXIT_SUCCESS;
 }
 
+int Dijkstra(Lab* lab, int sizeX, int sizeY , t_return_code ret, int player, t_move move)
+{
 
+}
 int A_Star(Lab* lab, int sizeX, int sizeY , t_return_code ret, int player, t_move move)
 {
 	
