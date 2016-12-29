@@ -145,7 +145,7 @@ int Dijkstra(Lab* laby, int sizeX, int sizeY , t_return_code ret, int player, t_
 	h.push( laby->play.y * sizeX + laby -> play.x -1 );
 	while( (parent = h.pop()) != -1)
 	{
-		for(i = 0; i < 4; i++)
+		for(i = 0; i < 4; i++)//when parent = 0 and totalplaces -1 must be handled
 		{
 			if(laby->lab[parent+dir[i]]!= 1 && visit[parent+dir[i]] == 0)/*We check the left/right/up/down of us and move there if there's no wall*/
 			{
