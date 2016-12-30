@@ -9,7 +9,7 @@ typedef struct {
 typedef struct {
     node_t *nodes;
     int len; /*The actual number of node of heap*/
-    int size; /*The size of the nodes we have ready in hand*/
+    int size; /*The size of the nodes we have ready in hand, in other words the capacity*/
 } p_queue_t;
  
 void push (p_queue_t *h, int priority, int data);
