@@ -34,8 +34,7 @@ typedef struct donnees_lab{
 	Pos Tresor;
 }Lab;
 
-int dir[4];
-
+int dir[4] ; /*to move in: left, right, up, down directions*/
 /*Fonction pour trouver le chemin avec Dijkstra will be used to count h*/
 int Dijkstra(Lab* lab, int sizeX, int sizeY , t_return_code ret, int player, t_move move);
 
@@ -101,7 +100,7 @@ int main()
 	laby -> Tresor.x = sizeY/2;
 	laby -> Tresor.y = sizeX/2;
 	
-	dir = {-1, +1, -sizeX, +sizeY}; /*to move in: left, right, up, down directions*/
+	dir[0] = -1;		dir[1] = 1;		dir[2] = -sizeX;	dir[3] =sizeY;/*to move in: left, right, up, down directions*/
 
 	if (player == 1)
 	{
@@ -131,7 +130,7 @@ int main()
 int Dijkstra(Lab* laby, int sizeX, int sizeY , t_return_code ret, int player, t_move move)
 {
 	int i, parent;
-	int total_places = sizeof(labData)/sizeof('0');
+	int total_places = sizeof(laby->lab)/sizeof('0');
 	
 	int* visit = (int*)calloc(0, total_places); /*todo: should be #FREE afterwards*/
 
@@ -142,22 +141,32 @@ int Dijkstra(Lab* laby, int sizeX, int sizeY , t_return_code ret, int player, t_
 	for(i = 0; i < total_places; i++)
 		pred[i] = (int*)calloc(-1, 2*sizeof(int));
 
-	h.push( laby->play.y * sizeX + laby -> play.x -1 );
-	while( (parent = h.pop()) != -1)
-	{
-		for(i = 0; i < 4; i++)//when parent = 0 and totalplaces -1 must be handled
-		{
-			if(laby->lab[parent+dir[i]]!= 1 && visit[parent+dir[i]] == 0)/*We check the left/right/up/down of us and move there if there's no wall*/
-			{
+	push(h, 0, laby->play.y * sizeX + laby -> play.x -1 );/*our case is min heap so if max heap worked better for Dijkstra todo: change 0 here*/
 
-			} 
+	while( (parent = pop(h)) != -1)
+	{
+		if(parent == 0 || parent == total_places -1)/*We cannot use the normal directioning array*/
+		{
+
+		}
+		else
+		{
+			for(i = 0; i < 4; i++)//when parent = 0 and totalplaces -1 must be handled
+			{
+			
+				if(laby->lab[parent+dir[i]]!= 1 && visit[parent+dir[i]] == 0)/*We check the left/right/up/down of us and move there if there's no wall*/
+				{
+
+				} 
+			}
 		}
 	}
 
+return 0;
 }
 int A_Star(Lab* lab, int sizeX, int sizeY , t_return_code ret, int player, t_move move)
 {
-	
+	return 0;
 }
 
 /*The function that plays a random move*/
