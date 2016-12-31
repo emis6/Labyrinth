@@ -143,9 +143,8 @@ int Dijkstra(Lab* laby, int sizeX, int sizeY , t_return_code ret, int player, t_
 	p_queue_t *h = (p_queue_t *)calloc(1, sizeof (p_queue_t)); /*priority queue of Dijkstra algo*/
 
 	/*todo free this shit*/
-	int** pred = (int **) malloc(total_places*sizeof (int*)); /*Holds the predecessor of each node in the path*/
-	for(i = 0; i < total_places ; i++)
-		pred[i] = (int*) calloc(0, 2*sizeof(int));
+	int* pred = (int *) calloc(-1, total_places*sizeof (int)); /*Holds the predecessor of each node in the path*/
+
 
 	x = laby->play.x;
 	y =laby->play.y;
@@ -161,7 +160,15 @@ int Dijkstra(Lab* laby, int sizeX, int sizeY , t_return_code ret, int player, t_
 		if(normal(x, y))
 		{
 			for(i =0; i < 4; i++)
-				
+			{
+				int newT = ind(x + dir[0][i], y + dir[1][i], sizeX);
+				if(visit[newT]!= 1 && laby->lab[newT] != '1')
+				{
+					pred[newT] = ind(x , y , sizeX) ;
+					visit[newT] = 1;
+					push(code(x + dir[0][i], y + dir[1][i]));
+				}
+			}
 		}
 		else
 		{
