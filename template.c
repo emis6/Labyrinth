@@ -34,11 +34,13 @@ typedef struct donnees_lab{
 	Pos Tresor;
 }Lab;
 
+int normal(int x, int y, int lenx, int leny);
+
 int code(int x, int y);
 
 void decode(int z, int* x, int* y);
 
-int dir[] = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};/*to move in: left, right, up, down directions*/ ; /*to move in: left, right, up, down directions*/
+int** dir = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};/*to move in: left, right, up, down directions*/ ; /*to move in: left, right, up, down directions*/
 /*Fonction pour trouver le chemin avec Dijkstra will be used to count h*/
 int Dijkstra(Lab* lab, int sizeX, int sizeY , t_return_code ret, int player, t_move move);
 
@@ -157,7 +159,7 @@ int Dijkstra(Lab* laby, int sizeX, int sizeY , t_return_code ret, int player, t_
 		if(laby->Tresor.x == x && laby->Tresor.y == y)
 			break;
 
-		if(normal(x, y))
+		if(normal(x, y, sizeX, sizeY))
 		{
 			for(i =0; i < 4; i++)
 			{
@@ -166,13 +168,42 @@ int Dijkstra(Lab* laby, int sizeX, int sizeY , t_return_code ret, int player, t_
 				{
 					pred[newT] = ind(x , y , sizeX) ;
 					visit[newT] = 1;
-					push(code(x + dir[0][i], y + dir[1][i]));
+					push(h,0, code(x + dir[0][i], y + dir[1][i]));
 				}
 			}
 		}
 		else
 		{
+			if(x ==1 )
+			{
+				if(y == 1)
+				{
 
+				}
+				else if(y == sizeY-1)
+				{
+
+				}
+				else
+				{
+
+				}
+			}
+			else if(x == sizeX -1)
+			{
+				if(y == 1)
+				{
+
+				}
+				else if(y == sizeY-1)
+				{
+
+				}
+				else
+				{
+					
+				}
+			}
 		}
 	}
 
