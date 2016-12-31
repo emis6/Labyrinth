@@ -137,7 +137,7 @@ int main()
 
 int Dijkstra(Lab* laby, int sizeX, int sizeY , t_return_code ret, int player, t_move move)
 {
-	int i, parent, x, y,z;
+	int i, x, y,z;
 	int total_places = sizeof(laby->lab)/sizeof('0');
 	
 	int* visit = (int*)calloc(0, total_places); /*todo: should be #FREE afterwards*/
@@ -176,30 +176,48 @@ int Dijkstra(Lab* laby, int sizeX, int sizeY , t_return_code ret, int player, t_
 		{
 			if(x ==1 )
 			{
-				if(y == 1)
+				if(y == 1)/*in upper left corner, exception cases: left and up*/
 				{
 
 				}
-				else if(y == sizeY-1)
+				else if(y == sizeY)/*in the right up corner, exception cases: right and up*/
 				{
 
 				}
-				else
+				else/*in first row but not in the corners, exception case: up direction*/
 				{
+					int newT;
+					for( i = 0; i < 3; i++)
+					{
+						newT= ind(x + dir[0][i], y + dir[1][i], sizeX);
+						if(visit[newT]!= 1 && laby->lab[newT] != '1')
+						{
+							pred[newT] = ind(x , y , sizeX) ;
+							visit[newT] = 1;
+							push(h,0, code(x + dir[0][i], y + dir[1][i]));
+						}
+					}
 
+					newT = ind(x, sizeY, sizeX);
+					if(visit[newT]!= 1 && laby->lab[newT] != '1')
+					{
+						pred[newT] = ind(x , y , sizeX) ;
+						visit[newT] = 1;
+						push(h,0, code(x , sizeY-1));
+					}
 				}
 			}
-			else if(x == sizeX -1)
+			else if(x == sizeX)
 			{
-				if(y == 1)
+				if(y == 1) /*in the left down corner, exception cases: left, down*/
 				{
 
 				}
-				else if(y == sizeY-1)
+				else if(y == sizeY)/*in the down right corner, exception cases: right, down*/
 				{
 
 				}
-				else
+				else/*in first row but not in the corners, exception case: down direction*/
 				{
 					
 				}
@@ -208,13 +226,12 @@ int Dijkstra(Lab* laby, int sizeX, int sizeY , t_return_code ret, int player, t_
 	}
 
 
-
 	return 0;
 }
 
 int normal(int x, int y, int lenx, int leny)
 {
-	if(x >=1 && x <=lenx-2 && y >= 1 && y <= leny-2 )
+	if(x >=1 && x <=lenx-1 && y >= 1 && y <= leny-1 )
 		return 1;
 	return 0;
 }
