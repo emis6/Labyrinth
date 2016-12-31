@@ -34,12 +34,19 @@ typedef struct donnees_lab{
 	Pos Tresor;
 }Lab;
 
-int dir[4] ; /*to move in: left, right, up, down directions*/
+int code(int x, int y);
+
+void decode(int z, int* x, int* y);
+
+int dir[] = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};/*to move in: left, right, up, down directions*/ ; /*to move in: left, right, up, down directions*/
 /*Fonction pour trouver le chemin avec Dijkstra will be used to count h*/
 int Dijkstra(Lab* lab, int sizeX, int sizeY , t_return_code ret, int player, t_move move);
 
 /*Fonction pour jouer avec A* simple*/
 int A_Star(Lab* lab, int sizeX, int sizeY , t_return_code ret, int player, t_move move);
+
+/*Takes x and y and number of rows of labyrinth then returns the index corresponding to x and y in laby which is a char**/
+int ind(int x, int y, int xlen);
 
 /*A function that plays a random move*/
 int playRandom(Lab* lab, int sizeX, int sizeY , t_return_code ret, int player, t_move move);
@@ -100,7 +107,6 @@ int main()
 	laby -> Tresor.x = sizeY/2;
 	laby -> Tresor.y = sizeX/2;
 	
-	dir[0] = -1;		dir[1] = 1;		dir[2] = -sizeX;	dir[3] =sizeY;/*to move in: left, right, up, down directions*/
 
 	if (player == 1)
 	{
@@ -129,7 +135,7 @@ int main()
 
 int Dijkstra(Lab* laby, int sizeX, int sizeY , t_return_code ret, int player, t_move move)
 {
-	int i, parent;
+	int i, parent, x, y,z;
 	int total_places = sizeof(laby->lab)/sizeof('0');
 	
 	int* visit = (int*)calloc(0, total_places); /*todo: should be #FREE afterwards*/
@@ -138,31 +144,55 @@ int Dijkstra(Lab* laby, int sizeX, int sizeY , t_return_code ret, int player, t_
 
 	/*todo free this shit*/
 	int** pred = (int **) malloc(total_places*sizeof (int*)); /*Holds the predecessor of each node in the path*/
-	for(i = 0; i < total_places; i++)
-		pred[i] = (int*)calloc(-1, 2*sizeof(int));
+	for(i = 0; i < total_places ; i++)
+		pred[i] = (int*) calloc(0, 2*sizeof(int));
 
-	push(h, 0, laby->play.y * sizeX + laby -> play.x -1 );/*our case is min heap so if max heap worked better for Dijkstra todo: change 0 here*/
+	x = laby->play.x;
+	y =laby->play.y;
 
-	while( (parent = pop(h)) != -1)
+	push(h, 0, code(x, y));
+
+	while((z = pop(h))!= -1)
 	{
-		if(parent == 0 || parent == total_places -1)/*We cannot use the normal directioning array*/
-		{
+		decode(z, &x, &y);
+		if(laby->Tresor.x == x && laby->Tresor.y == y)
+			break;
 
+		if(normal(x, y))
+		{
+			for(i =0; i < 4; i++)
+				
 		}
 		else
 		{
-			for(i = 0; i < 4; i++)//when parent = 0 and totalplaces -1 must be handled
-			{
-			
-				if(laby->lab[parent+dir[i]]!= 1 && visit[parent+dir[i]] == 0)/*We check the left/right/up/down of us and move there if there's no wall*/
-				{
 
-				} 
-			}
 		}
 	}
 
-return 0;
+
+
+	return 0;
+}
+
+int normal(int x, int y, int lenx, int leny)
+{
+	if(x >=1 && x <=lenx-2 && y >= 1 && y <= leny-2 )
+		return 1;
+	return 0;
+}
+
+int code(int x, int y)
+{
+	return (x<<8)|y;
+}
+void decode(int z, int* x, int* y)
+{
+	*y = z&127;
+	*x = z >>8;
+}
+int ind(int x, int y, int xlen)
+{
+	return y * xlen + x -1;
 }
 int A_Star(Lab* lab, int sizeX, int sizeY , t_return_code ret, int player, t_move move)
 {
