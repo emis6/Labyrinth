@@ -473,5 +473,3 @@ t_move make_move(Lab* laby, int size_x, int size_y)
 	return m;
 
 } 
-
-
