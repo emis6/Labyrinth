@@ -142,13 +142,12 @@ int Dijkstra(Lab* laby, int sizeX, int sizeY , t_return_code ret, int player, t_
 	
 	int* dirCor1[]
 
-	int* visit = (int*)calloc(0, total_places); /*todo: should be #FREE afterwards*/
+	int* visit = (int*)calloc(0, total_places); 
 
 	p_queue_t *h = (p_queue_t *)calloc(1, sizeof (p_queue_t)); /*priority queue of Dijkstra algo*/
 
-	/*todo free this shit*/
 	int* pred = (int *) calloc(-1, total_places*sizeof (int)); /*Holds the predecessor of each node in the path*/
-
+	int* cost = (int *) calloc(0, total_places*sizeof (int)); /*Holds the predecessor of each node in the path*/
 
 	x = laby->play.x;
 	y =laby->play.y;
@@ -173,15 +172,16 @@ int Dijkstra(Lab* laby, int sizeX, int sizeY , t_return_code ret, int player, t_
 			{
 				pred[newT] = ind(x , y , sizeX) ;
 				visit[newT] = 1;
-				push(h,0, code(x + dir[0][i], y + dir[1][i]));
+				cost[newT] = cost[ind(x, y, sizeX)] +1;
+				push(h,0, code(newX, newY));
 			}
 		}
 	}
-	//todo find the path and calculate it
-
-	while()
-
-	return 0;
+	int ret = cost[ind(laby->Tresor.x, laby->Tresor.y, sizeX)];
+	free(visit);
+	free(cost);
+	free(pred);
+	return ret;
 }
 
 int normal(int x, int y, int lenx, int leny)
