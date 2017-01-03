@@ -8,7 +8,7 @@ LIBS = -L $(LIBDIR)/lib
 LDFLAGS = -lm -lcgs
 
 # fichiers du projet
-SRC = my_heap.h my_heap.c template.c
+SRC = template.c
 OBJ = $(SRC:.c=.o)
 EXEC = template
 

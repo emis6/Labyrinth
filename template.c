@@ -40,12 +40,13 @@ int code(int x, int y);
 
 void decode(int z, int* x, int* y);
 
-int** dir = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};/*to move in: left, right, up, down directions*/ ; /*to move in: left, right, up, down directions*/
+int dir[4][2] ;//= {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};/*to move in: left, right, up, down directions*/ ; /*to move in: left, right, up, down directions*/
+
 /*Fonction pour trouver le chemin avec BFS will be used to count h*/
 int BFS(Lab* lab, int sizeX, int sizeY , t_return_code ret, int player, t_move move);
 
 /*Fonction pour jouer avec A* simple*/
-int A_Star(Lab* lab, int sizeX, int sizeY , t_return_code ret, int player, t_move move);
+int* A_Star(Lab* lab, int sizeX, int sizeY , t_return_code ret, int player, t_move move);
 
 /*Takes x and y and number of rows of labyrinth then returns the index corresponding to x and y in laby which is a char**/
 int ind(int x, int y, int xlen);
@@ -81,7 +82,11 @@ t_move make_move(Lab* laby, int size_x, int size_y);
 int main()
 {
 	char labName[50];					/* name of the labyrinth */
-	char* labData;						/* data of the labyrinth */
+	char* labData;
+	
+	dir[0][0] = -1; dir[0][1] = 0; dir[1][0] = 1; dir[1][1] =0 ;
+	dir[2][0] = 0; dir[2][1] = -1; dir[3][0] = 0; dir[3][1] = 1;
+						/* data of the labyrinth */
 	t_return_code ret = MOVE_OK;		/* indicates the status of the previous move */
 	t_move move;						/* a move */
 	int player;
@@ -123,7 +128,7 @@ int main()
 	}
 	
 	//playRandom(laby,  sizeX,  sizeY, ret, player, move);
-
+	printLabyrinth();
 	int* chemin = A_Star(laby, sizeX,  sizeY , ret,  player, move);
 
 	int len = sizeof(chemin)/sizeof(int);
@@ -132,6 +137,7 @@ int main()
 		printf("%d\t", chemin[len]);
 		--len;
 	}
+	free(chemin);
 
 	/* we do not forget to free the allocated array */
 	free(labData);
@@ -159,9 +165,6 @@ int BFS(Lab* laby, int sizeX, int sizeY , t_return_code ret, int player, t_move 
 
 	x = laby->play.x;
 	y =laby->play.y;
-	
-	xsource = x;
-	ysource = y;
 
 	push(h, 0, code(x, y));
 
@@ -185,11 +188,11 @@ int BFS(Lab* laby, int sizeX, int sizeY , t_return_code ret, int player, t_move 
 			}
 		}
 	}
-	int ret = cost[ind(laby->Tresor.x, laby->Tresor.y, sizeX)];
+	int rete = cost[ind(laby->Tresor.x, laby->Tresor.y, sizeX)];
 	free(visit);
 	free(cost);
 	free(pred);
-	return ret;
+	return rete;
 }
 
 int normal(int x, int y, int lenx, int leny)
@@ -210,67 +213,81 @@ void decode(int z, int* x, int* y)
 }
 int ind(int x, int y, int xlen)
 {
-	return y * xlen + x -1;
+	return (x) * xlen + y -1;
 }
 
 /*Returns an int* allocated so be careful and #FREE*/
-int* A_Star(Lab* lab, int sizeX, int sizeY , t_return_code ret, int player, t_move move)
+int* A_Star(Lab* laby, int sizeX, int sizeY , t_return_code ret, int player, t_move move)
 {
 	int i, x, y,z;
 	int total_places = sizeX*sizeY;
 	int index = ind(laby->Tresor.x , laby->Tresor.y, sizeX);
-	int size = 2;
-	int length;
-	int* visit = (int*)calloc(0, total_places); 
+	int length= 0;
+
+	int* visit = (int*)calloc( total_places, sizeof(int)); 
+
+	printf("total_places: %d\n", total_places);
 
 	p_queue_t *h = (p_queue_t *)calloc(1, sizeof (p_queue_t)); /*priority queue of BFS algo*/
 
-	int* pred = (int *) calloc(-1, total_places*sizeof (int)); /*Holds the predecessor of each node in the path*/
-	int* cost = (int *) calloc(0, total_places*sizeof (int)); /*Holds the predecessor of each node in the path*/
-	int* chemin = (int*) calloc(-1, size*sizeof(int));
+
+	int* pred = (int *) calloc(total_places, sizeof (int)); /*Holds the predecessor of each node in the path*/
+
+	int* cost = (int *) calloc(total_places, sizeof (int)); /*Holds the predecessor of each node in the path*/
+
+	int* chemin = (int *) calloc(total_places, sizeof(int));
 
 	x = laby->play.x;
 	y =laby->play.y;
 	
-	xsource = x;
-	ysource = y;
+	printf("X: %d\tY: %d\n", x, y);
 
+	int xsource = x;
+	int ysource = y;
+	
 	push(h, 0, code(x, y));
+	printf("after f push\n");
 
 	while((z = pop(h))!= -1)
 	{
+		printf("in f while\n");
 		decode(z, &x, &y);
+
 		if(laby->Tresor.x == x && laby->Tresor.y == y)
 			break;
 
 		for(i =0; i < 4; i++)
 		{
-			int newX = (x- 1 + dir[0][i] + sizeX) % sizeX +1;
-			int newY = (y -1+ dir[1][i] + sizeY) % sizeY +1;
+			int newX = (x- 1 + dir[i][0] + sizeY) % sizeY +1;
+			int newY = (y -1+ dir[i][1] + sizeX) % sizeX +1;
+
 			int newT = ind(newX, newY, sizeX);
-			if(visit[newT]!= 1 && laby->lab[newT] != '1')
+
+			if(visit[newT]!= 1 && laby->lab[newT] == 0)
 			{
+
 				pred[newT] = ind(x , y , sizeX) ;
 				visit[newT] = 1;
 				cost[newT] = cost[ind(x, y, sizeX)] +1;
+				printf("before push\n");
 				push(h,0, code(newX, newY));
+				printf("after push\n");
 			}
 		}
 	}
-	int ret = cost[ind(laby->Tresor.x, laby->Tresor.y, sizeX)];
 
+	printf("first while finished succefly\n");
 	chemin[0] = index;
 	length = 1;
-	while(pred[index] != ind(xsource, ysource, sizeX))
+	printf("%d\n", pred[index]);
+
+	while(index != ind(xsource, ysource, sizeX))
 	{
+		printf("node: %d\n", index);
 		index = pred[index];
 		length++;
-		if(length > size)
-		{
-			size = size*2;
-			chemin = (int*) realloc(chemin, size);
-		}
-		chemin[length-1] = ind;
+
+		chemin[length-1] = index;
 	}
 	free(visit);
 	free(cost);

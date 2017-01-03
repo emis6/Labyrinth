@@ -13,8 +13,9 @@ typedef struct {
 } p_queue_t;
  
 void push (p_queue_t *h, int priority, int data);
-
  
 int pop (p_queue_t *h) ;
+
+node_t * my_realloc(node_t *nodes, int oldSize,int newSize);
  
 #endif

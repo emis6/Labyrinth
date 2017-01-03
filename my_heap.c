@@ -9,10 +9,16 @@
 
 void push (p_queue_t *h, int priority, int data) 
 {
+    printf("push: size: %d\n", h->size);
+
     if (h->len + 1 >= h->size) /*We check if we're running out of capacity we double it*/
     {
-        h->size = h->size ? h->size * 2 : 4;/*If it's the first time pushing an element the heap is initialized with capacity = 4*/
-        h->nodes = (node_t *)realloc(h->nodes, h->size * sizeof (node_t));
+        printf("WTF\n");
+        printf("size: %d\n", h->size);
+
+        h->size = h->size ? (h->size +10) : 4;/*If it's the first time pushing an element the heap is initialized with capacity = 4*/
+        
+        h->nodes = my_realloc(h->nodes, (h->size -30)* sizeof (node_t),h->size * sizeof (node_t));
     }
 
     int i = h->len + 1;
@@ -60,5 +66,20 @@ int pop (p_queue_t *h)
     }
     h->nodes[i] = h->nodes[h->len + 1];
     return data;
+}
+
+node_t* my_realloc(node_t *nodes, int oldSize,int newSize)
+{
+    int i =0 ;
+    node_t* ret = (node_t*) malloc(newSize *(sizeof(node_t) ));
+    printf("after malloc\n");
+
+    for(i = 0; i <oldSize; i++)
+    {
+        printf("in cpy for: %d \n", i);
+        ret[i] = nodes[i];
+    }
+
+    return ret;
 }
  
