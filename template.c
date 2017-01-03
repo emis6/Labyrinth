@@ -156,12 +156,12 @@ int BFS(Lab* laby, int sizeX, int sizeY , t_return_code ret, int player, t_move 
 	int total_places = sizeX*sizeY;
 	
 
-	int* visit = (int*)calloc(0, total_places); 
+	int* visit = (int*)calloc(total_places); 
 
-	p_queue_t *h = (p_queue_t *)calloc(1, sizeof (p_queue_t)); /*priority queue of BFS algo*/
+	p_queue_t *h = (p_queue_t *)calloc(sizeof (p_queue_t)); /*priority queue of BFS algo*/
 
-	int* pred = (int *) calloc(-1, total_places*sizeof (int)); /*Holds the predecessor of each node in the path*/
-	int* cost = (int *) calloc(0, total_places*sizeof (int)); /*Holds the predecessor of each node in the path*/
+	int* pred = (int *) calloc(total_places*sizeof (int)); /*Holds the predecessor of each node in the path*/
+	int* cost = (int *) calloc(total_places*sizeof (int)); /*Holds the predecessor of each node in the path*/
 
 	x = laby->play.x;
 	y =laby->play.y;
