@@ -41,8 +41,8 @@ int code(int x, int y);
 void decode(int z, int* x, int* y);
 
 int** dir = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};/*to move in: left, right, up, down directions*/ ; /*to move in: left, right, up, down directions*/
-/*Fonction pour trouver le chemin avec Dijkstra will be used to count h*/
-int Dijkstra(Lab* lab, int sizeX, int sizeY , t_return_code ret, int player, t_move move);
+/*Fonction pour trouver le chemin avec BFS will be used to count h*/
+int BFS(Lab* lab, int sizeX, int sizeY , t_return_code ret, int player, t_move move);
 
 /*Fonction pour jouer avec A* simple*/
 int A_Star(Lab* lab, int sizeX, int sizeY , t_return_code ret, int player, t_move move);
@@ -122,7 +122,16 @@ int main()
 		laby -> adv.y = sizeX - 1;
 	}
 	
-	playRandom(laby,  sizeX,  sizeY, ret, player, move);
+	//playRandom(laby,  sizeX,  sizeY, ret, player, move);
+
+	int* chemin = A_Star(laby, sizeX,  sizeY , ret,  player, move);
+
+	int len = sizeof(chemin)/sizeof(int);
+	while (len!= 0)
+	{
+		printf("%d\t", chemin[len]);
+		--len;
+	}
 
 	/* we do not forget to free the allocated array */
 	free(labData);
@@ -135,16 +144,15 @@ int main()
 	return EXIT_SUCCESS;
 }
 
-int Dijkstra(Lab* laby, int sizeX, int sizeY , t_return_code ret, int player, t_move move)
+int BFS(Lab* laby, int sizeX, int sizeY , t_return_code ret, int player, t_move move)
 {
 	int i, x, y,z;
-	int total_places = sizeof(laby->lab)/sizeof('0');
+	int total_places = sizeX*sizeY;
 	
-	int* dirCor1[]
 
 	int* visit = (int*)calloc(0, total_places); 
 
-	p_queue_t *h = (p_queue_t *)calloc(1, sizeof (p_queue_t)); /*priority queue of Dijkstra algo*/
+	p_queue_t *h = (p_queue_t *)calloc(1, sizeof (p_queue_t)); /*priority queue of BFS algo*/
 
 	int* pred = (int *) calloc(-1, total_places*sizeof (int)); /*Holds the predecessor of each node in the path*/
 	int* cost = (int *) calloc(0, total_places*sizeof (int)); /*Holds the predecessor of each node in the path*/
@@ -204,9 +212,71 @@ int ind(int x, int y, int xlen)
 {
 	return y * xlen + x -1;
 }
-int A_Star(Lab* lab, int sizeX, int sizeY , t_return_code ret, int player, t_move move)
+
+/*Returns an int* allocated so be careful and #FREE*/
+int* A_Star(Lab* lab, int sizeX, int sizeY , t_return_code ret, int player, t_move move)
 {
-	return 0;
+	int i, x, y,z;
+	int total_places = sizeX*sizeY;
+	int index = ind(laby->Tresor.x , laby->Tresor.y, sizeX);
+	int size = 2;
+	int length;
+	int* visit = (int*)calloc(0, total_places); 
+
+	p_queue_t *h = (p_queue_t *)calloc(1, sizeof (p_queue_t)); /*priority queue of BFS algo*/
+
+	int* pred = (int *) calloc(-1, total_places*sizeof (int)); /*Holds the predecessor of each node in the path*/
+	int* cost = (int *) calloc(0, total_places*sizeof (int)); /*Holds the predecessor of each node in the path*/
+	int* chemin = (int*) calloc(-1, size*sizeof(int));
+
+	x = laby->play.x;
+	y =laby->play.y;
+	
+	xsource = x;
+	ysource = y;
+
+	push(h, 0, code(x, y));
+
+	while((z = pop(h))!= -1)
+	{
+		decode(z, &x, &y);
+		if(laby->Tresor.x == x && laby->Tresor.y == y)
+			break;
+
+		for(i =0; i < 4; i++)
+		{
+			int newX = (x- 1 + dir[0][i] + sizeX) % sizeX +1;
+			int newY = (y -1+ dir[1][i] + sizeY) % sizeY +1;
+			int newT = ind(newX, newY, sizeX);
+			if(visit[newT]!= 1 && laby->lab[newT] != '1')
+			{
+				pred[newT] = ind(x , y , sizeX) ;
+				visit[newT] = 1;
+				cost[newT] = cost[ind(x, y, sizeX)] +1;
+				push(h,0, code(newX, newY));
+			}
+		}
+	}
+	int ret = cost[ind(laby->Tresor.x, laby->Tresor.y, sizeX)];
+
+	chemin[0] = index;
+	length = 1;
+	while(pred[index] != ind(xsource, ysource, sizeX))
+	{
+		index = pred[index];
+		length++;
+		if(length > size)
+		{
+			size = size*2;
+			chemin = (int*) realloc(chemin, size);
+		}
+		chemin[length-1] = ind;
+	}
+	free(visit);
+	free(cost);
+	free(pred);
+
+	return chemin;
 }
 
 /*The function that plays a random move*/
