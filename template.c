@@ -156,7 +156,7 @@ int BFS(Lab* laby, int sizeX, int sizeY , t_return_code ret, int player, t_move 
 	int total_places = sizeX*sizeY;
 	
 
-	int* visit = (int*)calloc(total_places); 
+	int* visit = (int*)calloc(total_places, sizeof(int)); 
 
 	p_queue_t *h = (p_queue_t *)malloc(sizeof (p_queue_t)); /*priority queue of BFS algo*/
 
