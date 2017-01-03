@@ -1,5 +1,5 @@
 # Modèle de fichier Makefile  pour le fichier template.c
-LIBDIR = /home/sasl/encad/barajard/projet/CGS_lib/
+LIBDIR = /home/sasl/encad/brajard/projet/CGS_lib/
 
 # options de compilation
 CC = gcc
