@@ -228,7 +228,7 @@ int* A_Star(Lab* laby, int sizeX, int sizeY , t_return_code ret, int player, t_m
 
 	printf("total_places: %d\n", total_places);
 
-	p_queue_t *h = (p_queue_t *)malloc(1, sizeof (p_queue_t)); /*priority queue of BFS algo*/
+	p_queue_t *h = (p_queue_t *)malloc(sizeof (p_queue_t)); /*priority queue of BFS algo*/
 
 
 	int* pred = (int *) calloc(total_places, sizeof (int)); /*Holds the predecessor of each node in the path*/
